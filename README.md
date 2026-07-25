@@ -67,7 +67,7 @@ instead of the manual command, go to **Settings → Pages** and set Source to
 index.html               entry HTML, page title and meta description
 src/main.jsx             mounts the React app
 src/index.css            Tailwind directives + reduced-motion handling
-src/NalediPortfolio.jsx  the whole site (nav, sections, CLI sim, quiz, subnet calc)
+src/NalediPortfolio.jsx  the whole app (shell, sections, triage simulator, admin console)
 vite.config.js           build config, incl. the GitHub Pages base path
 tailwind.config.js       Tailwind content paths
 ```
