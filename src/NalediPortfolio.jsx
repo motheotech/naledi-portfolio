@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Menu, X, Terminal, ArrowUpRight, Mail, Linkedin, Github, MapPin,
-  Clock, Ticket, ShieldCheck, Wrench, Globe, GraduationCap, Copy, Check,
+  Clock, Ticket, ShieldCheck, Wrench, Globe, GraduationCap, Copy, Check, Phone,
 } from 'lucide-react';
 
 /* ------------------------------------------------------------------ *
@@ -18,7 +18,12 @@ const NAV = [
 
 const SIMULATOR_URL = 'https://servicedesk-simulator.com/';
 const CAFE_URL = 'https://motheotech.github.io/MotheoDigitalCafe/';
-const EMAIL = 'naledi@motheodigitalcafe.co.za';
+const EMAIL = 'motheomnaledi@gmail.com';
+const PHONE_DISPLAY = '+27 63 876 3337';
+const PHONE_TEL = '+27638763337';
+const LINKEDIN_URL = 'https://www.linkedin.com/in/naledimotheo-it';
+const LINKEDIN_HANDLE = 'naledimotheo-it';
+const EMPLOYER = 'Afrika Tikkun';
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -30,6 +35,161 @@ function usePrefersReducedMotion() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
   return reduced;
+}
+
+/* Ambient network field. Drawn on canvas rather than in React state so it
+ * costs one animation frame instead of a re-render of the whole page. */
+function NetworkField() {
+  const reduced = usePrefersReducedMotion();
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const LINK_DIST = 155;
+    let width = 0;
+    let height = 0;
+    let nodes = [];
+    let packets = [];
+    let frame = null;
+    let last = 0;
+
+    const build = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      canvas.width = Math.max(1, Math.floor(width * dpr));
+      canvas.height = Math.max(1, Math.floor(height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const count = Math.min(52, Math.max(14, Math.round((width * height) / 27000)));
+      nodes = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 7,
+        vy: (Math.random() - 0.5) * 7,
+        r: 1 + Math.random() * 1.3,
+      }));
+      packets = [];
+    };
+
+    // Fades the field towards the bottom of the viewport so text stays clean.
+    const depthAt = (y) => 1 - 0.5 * (y / (height || 1));
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.lineWidth = 1;
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d > LINK_DIST) continue;
+          const a = 0.17 * (1 - d / LINK_DIST) * depthAt((nodes[i].y + nodes[j].y) / 2);
+          ctx.strokeStyle = `rgba(36, 104, 180, ${a})`;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.stroke();
+        }
+      }
+
+      for (const n of nodes) {
+        ctx.fillStyle = `rgba(23, 82, 147, ${0.32 * depthAt(n.y)})`;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      for (const p of packets) {
+        const a = nodes[p.a];
+        const b = nodes[p.b];
+        if (!a || !b) continue;
+        const x = a.x + (b.x - a.x) * p.t;
+        const y = a.y + (b.y - a.y) * p.t;
+        const glow = Math.sin(Math.PI * Math.min(p.t, 1));
+        ctx.fillStyle = `rgba(36, 104, 180, ${0.6 * glow * depthAt(y)})`;
+        ctx.beginPath();
+        ctx.arc(x, y, 1.9, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
+
+    // A packet travels between two nodes that are currently linked.
+    const spawnPacket = () => {
+      if (nodes.length < 2 || packets.length > 5) return;
+      const a = Math.floor(Math.random() * nodes.length);
+      let b = -1;
+      let best = LINK_DIST;
+      for (let i = 0; i < nodes.length; i++) {
+        if (i === a) continue;
+        const d = Math.hypot(nodes[i].x - nodes[a].x, nodes[i].y - nodes[a].y);
+        if (d < best) {
+          best = d;
+          b = i;
+        }
+      }
+      if (b !== -1) packets.push({ a, b, t: 0, speed: 0.45 + Math.random() * 0.4 });
+    };
+
+    const step = (now) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+
+      for (const n of nodes) {
+        n.x += n.vx * dt;
+        n.y += n.vy * dt;
+        if (n.x < -20) n.x = width + 20;
+        else if (n.x > width + 20) n.x = -20;
+        if (n.y < -20) n.y = height + 20;
+        else if (n.y > height + 20) n.y = -20;
+      }
+
+      for (const p of packets) p.t += p.speed * dt;
+      packets = packets.filter((p) => p.t <= 1);
+      if (Math.random() < 0.025) spawnPacket();
+
+      render();
+      frame = requestAnimationFrame(step);
+    };
+
+    const start = () => {
+      if (frame !== null || reduced) return;
+      last = performance.now();
+      frame = requestAnimationFrame(step);
+    };
+    const stop = () => {
+      if (frame !== null) cancelAnimationFrame(frame);
+      frame = null;
+    };
+
+    const onResize = () => {
+      build();
+      render();
+    };
+    const onVisibility = () => (document.hidden ? stop() : start());
+
+    build();
+    render();
+    start();
+
+    window.addEventListener('resize', onResize);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      stop();
+      window.removeEventListener('resize', onResize);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [reduced]);
+
+  return (
+    <div className="pointer-events-none fixed inset-0 -z-10" aria-hidden="true">
+      <canvas ref={canvasRef} className="h-full w-full" />
+    </div>
+  );
 }
 
 function Eyebrow({ children, tone = 'dark' }) {
@@ -69,7 +229,8 @@ export default function NalediPortfolio() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <div className="min-h-screen font-sans">
+      <NetworkField />
       <TopBar section={section} go={go} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       <main>
@@ -87,7 +248,7 @@ export default function NalediPortfolio() {
 
 function TopBar({ section, go, menuOpen, setMenuOpen }) {
   return (
-    <header className="sticky top-0 z-50 border-b border-brand-100 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-brand-100 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
         <button onClick={() => go('overview')} className="text-left">
           <div className="text-[17px] font-bold uppercase tracking-tight text-ink">Naledi Motheo</div>
@@ -163,7 +324,7 @@ function Overview({ go }) {
       <section className="border-b border-brand-100">
         <div className="mx-auto grid max-w-6xl gap-12 px-5 py-14 md:grid-cols-[1.05fr_1fr] md:py-20">
           <div className="self-center">
-            <Eyebrow>IT Officer · Afrika Tikkun Services</Eyebrow>
+            <Eyebrow>IT Officer · {EMPLOYER}</Eyebrow>
             <h1 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-ink md:text-5xl">
               I keep three sites signed in, connected and working.
             </h1>
@@ -922,7 +1083,7 @@ const COMMANDS = {
   whoami: () => [
     'operator : naledi.motheo',
     'role     : IT Officer',
-    'org      : Afrika Tikkun Services',
+    `org      : ${EMPLOYER}`,
     'scope    : 3 sites · ~100 tickets/month · M365 + Entra + 3CX',
     'shell    : simulated. nothing here touches a real tenant.',
     '',
@@ -1015,8 +1176,9 @@ const COMMANDS = {
   ],
   contact: () => [
     `  email     ${EMAIL}`,
-    '  linkedin  Naledi Motheo',
-    '  based     Johannesburg, South Africa',
+    `  mobile    ${PHONE_DISPLAY}`,
+    `  linkedin  ${LINKEDIN_HANDLE}`,
+    '  based     Johannesburg, Gauteng, South Africa',
     '  business  Motheo Digital Cafe',
     '',
   ],
@@ -1349,8 +1511,18 @@ function Contact() {
             </button>
           </div>
 
+          <a href={`tel:${PHONE_TEL}`} className="flex items-center gap-4 py-5 hover:text-brand-600">
+            <Phone className="h-5 w-5 shrink-0 text-brand-600" />
+            <div>
+              <div className="font-mono text-[11px] uppercase tracking-widest2 text-slateink">
+                Mobile
+              </div>
+              <div className="font-semibold text-ink">{PHONE_DISPLAY}</div>
+            </div>
+          </a>
+
           <a
-            href="https://linkedin.com/in/naledi-motheo"
+            href={LINKEDIN_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-4 py-5 hover:text-brand-600"
@@ -1360,7 +1532,7 @@ function Contact() {
               <div className="font-mono text-[11px] uppercase tracking-widest2 text-slateink">
                 LinkedIn
               </div>
-              <div className="font-semibold text-ink">Naledi Motheo</div>
+              <div className="font-semibold text-ink">{LINKEDIN_HANDLE}</div>
             </div>
           </a>
 
@@ -1385,7 +1557,7 @@ function Contact() {
               <div className="font-mono text-[11px] uppercase tracking-widest2 text-slateink">
                 Based in
               </div>
-              <div className="font-semibold text-ink">Drieziek, Orange Farm · Johannesburg</div>
+              <div className="font-semibold text-ink">Johannesburg, Gauteng, South Africa</div>
             </div>
           </div>
         </div>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Try it: service desk simulations | Naledi Motheo</title>
+<meta name="description" content="Four browser simulations: ticket triage, a Microsoft 365 admin console, joiner and leaver provisioning order, and network fault-finding in a computer lab.">
+<meta name="theme-color" content="#07182e">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="canonical" href="https://motheotech.github.io/naledi-portfolio/lab/">
+<meta property="og:title" content="Try it: service desk simulations | Naledi Motheo">
+<meta property="og:description" content="Four browser simulations: ticket triage, a Microsoft 365 admin console, joiner and leaver provisioning order, and network fault-finding in a computer lab.">
+<meta property="og:url" content="https://motheotech.github.io/naledi-portfolio/lab/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://motheotech.github.io/naledi-portfolio/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="en-ZA" href="https://motheotech.github.io/naledi-portfolio/lab/">
+<link rel="alternate" hreflang="st" href="https://motheotech.github.io/naledi-portfolio/lab/?lang=st">
+<link rel="alternate" hreflang="zu" href="https://motheotech.github.io/naledi-portfolio/lab/?lang=zu">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="../"><svg class="brand-mark" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="7" fill="#07182e"/><path d="M9 24V10h2.6l7.2 9.6V10H21.4v14h-2.6L11.6 14.4V24z" fill="#fff"/><circle cx="25.5" cy="22" r="2.4" fill="#4e8bce"/></svg><span><b>Naledi Motheo</b><span data-i18n="brand.sub">IT Officer, Johannesburg</span></span></a>
+    <nav aria-label="Main"><ul class="nav-links" id="menu"><li><a href="../" data-i18n="nav.home">Home</a></li><li><a href="../experience/" data-i18n="nav.work">Work history</a></li><li><a href="../lab/" aria-current="page" data-i18n="nav.lab">Try it</a></li><li><a href="../credentials/" data-i18n="nav.creds">Credentials</a></li><li><a href="../contact/" data-i18n="nav.contact">Contact</a></li></ul></nav>
+    <label class="lang"><span data-i18n="lang">Language</span>
+      <select class="lang-pick" aria-label="Language"><option value="en">English</option><option value="st">Sesotho</option><option value="zu">isiZulu</option></select></label>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<main id="main">
+<section class="page-head"><div class="wrap">
+  <h1 data-i18n="lab.title">Try it</h1>
+  <p class="lead" data-i18n="lab.lead">Four simulations built from the work I do every week. They run entirely in your browser on fictional data, and none of them reach a real system.</p>
+</div></section>
+<section class="sec"><div class="wrap">
+  <div class="tabs" role="tablist" aria-label="Simulations"><button type="button" class="tab" role="tab" id="tab-triage" aria-controls="triage" aria-selected="false" data-i18n="try.1">Ticket triage</button><button type="button" class="tab" role="tab" id="tab-console" aria-controls="console" aria-selected="false" data-i18n="try.2">Admin console</button><button type="button" class="tab" role="tab" id="tab-lifecycle" aria-controls="lifecycle" aria-selected="false" data-i18n="try.3">New starter and leaver</button><button type="button" class="tab" role="tab" id="tab-network" aria-controls="network" aria-selected="false" data-i18n="try.4">Network fault-finding</button></div>
+  <p class="lang-note" hidden data-i18n="lab.note">Scenario text is in English, the working language of the service desk. Buttons and results follow your language choice.</p>
+  <div class="tabpanel" role="tabpanel" id="triage" aria-labelledby="tab-triage" hidden>
+    <div class="sim-intro"><div><h2 data-i18n="try.1">Ticket triage</h2><p style="margin-top:.6rem" data-i18n="lab.1i">Set a priority, choose a first action. The clock runs while you decide. There is no score for speed: the point is whether the call was right.</p></div>
+      <p class="how">Six tickets based on the patterns that come up most: access, executives, new starters, telephony, phishing and the slow printer.</p></div>
+    <div class="sim" id="triage-sim"></div>
+  </div>
+  <div class="tabpanel" role="tabpanel" id="console" aria-labelledby="tab-console" hidden>
+    <div class="sim-intro"><div><h2 data-i18n="try.2">Admin console</h2><p style="margin-top:.6rem" data-i18n="lab.2i">A simulated shell against a fictional tenant. Type help to start. Arrow keys walk your history and Tab completes a command.</p></div>
+      <p class="how">Try ticket-stats, m365-status, users or assets. lang st switches the whole site to Sesotho.</p></div>
+    <div class="panel on-ink"><div class="panel-bar"><span class="dot live"></span><span>naledi@motheo: admin console</span></div>
+    <div class="term-body" id="con-body" role="log" aria-label="Console output"><div class="term-in"><label for="con-input">naledi@motheo:~$</label><input id="con-input" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="type help" data-i18n-ph="con.ph"></div></div>
+    <div class="term-chips" id="con-chips"><button type="button">help</button><button type="button">whoami</button><button type="button">ticket-stats</button><button type="button">m365-status</button><button type="button">users</button><button type="button">assets</button><button type="button">3cx-status</button><button type="button">certs</button><button type="button">clear</button></div></div>
+  </div>
+  <div class="tabpanel" role="tabpanel" id="lifecycle" aria-labelledby="tab-lifecycle" hidden>
+    <div class="sim-intro"><div><h2 data-i18n="try.3">New starter and leaver</h2><p style="margin-top:.6rem" data-i18n="lab.3i">Pick the next step from the list. There is more than one right order, but some steps depend on others.</p></div>
+      <p class="how">Switch between a new starter and a leaver at the top. Jumping ahead is allowed; the warning explains what it would break.</p></div>
+    <div class="sim" id="lc-sim"></div>
+  </div>
+  <div class="tabpanel" role="tabpanel" id="network" aria-labelledby="tab-network" hidden>
+    <div class="sim-intro"><div><h2 data-i18n="try.4">Network fault-finding</h2><p style="margin-top:.6rem" data-i18n="lab.4i">A computer lab has no internet. Every test costs time. Find the fault in as few tests as you can, then apply the right fix.</p></div>
+      <p class="how">One of four faults is picked at random. Nodes turn green or amber as tests prove them. New fault gives you a different one.</p></div>
+    <div class="sim" id="net-sim"></div>
+  </div>
+</div></section>
+<section class="sec-tight">
+  <div class="wrap">
+    <h2 class="vh" data-i18n="next">Where to next</h2>
+    <div class="next-grid"><a class="next-card" href="../experience/"><b data-i18n="nav.work">Work history</b><span data-i18n="next.work">From an internet cafe counter to the tenant, role by role.</span></a><a class="next-card" href="../credentials/"><b data-i18n="nav.creds">Credentials</b><span data-i18n="next.creds">Microsoft, Google and Oracle certifications with verification links.</span></a><a class="next-card" href="../contact/"><b data-i18n="nav.contact">Contact</b><span data-i18n="next.contact">Email or WhatsApp. CV and references on request.</span></a></div>
+  </div>
+</section>
+</main>
+<footer class="foot on-ink">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h4>Naledi Motheo</h4>
+        <p data-i18n="foot.about">IT Officer at Afrika Tikkun. Microsoft 365, Entra ID and Active Directory for 600+ staff across six centres. Studying towards a Higher Certificate in IT and building towards cloud and systems engineering.</p>
+      </div>
+      <div><h4 data-i18n="foot.pages">Pages</h4><ul><li><a href="../" data-i18n="nav.home">Home</a></li><li><a href="../experience/" data-i18n="nav.work">Work history</a></li><li><a href="../lab/" data-i18n="nav.lab">Try it</a></li><li><a href="../credentials/" data-i18n="nav.creds">Credentials</a></li><li><a href="../contact/" data-i18n="nav.contact">Contact</a></li></ul></div>
+      <div><h4 data-i18n="foot.else">Elsewhere</h4><ul>
+        <li><a href="https://www.linkedin.com/in/naledi-motheo-it" rel="noopener" target="_blank">LinkedIn</a></li>
+        <li><a href="https://github.com/motheotech" rel="noopener" target="_blank">GitHub</a></li>
+        <li><a href="https://motheodigitalcafe.co.za/" rel="noopener" target="_blank">Motheo Digital Cafe</a></li>
+        <li><a href="mailto:motheomnaledi@gmail.com">motheomnaledi@gmail.com</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Naledi Motheo</span>
+      <span data-i18n="foot.note">Simulations use fictional data. No real tenant is reachable from this site.</span>
+    </div>
+  </div>
+</footer>
+<script src="../i18n.js" defer></script>
+<script src="../site.js" defer></script>
+<script src="../lab-data.js" defer></script>
+<script src="../lab.js" defer></script>
+</body>
+</html>
